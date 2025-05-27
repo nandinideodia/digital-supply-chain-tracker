@@ -1,8 +1,11 @@
 package com.example.supplytracker.enums;
 
 public enum AlertType {
- SYSTEM,
- SECURITY,
- PERFORMANCE,
- MAINTENANCE
+    DELAY,
+    DAMAGE,
+    STUCK,
+    DUPLICATE_ENTRY,
+    LOW_INVENTORY,
+    UNAUTHORIZED_ACCESS,
+    EMERGENCY
 }

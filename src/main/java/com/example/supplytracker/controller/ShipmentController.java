@@ -7,32 +7,32 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/shipments")
+@RestController                                          // it indicates that class handles HTTP request 
+@RequestMapping("/api/shipments")						// it define the base url 
 public class ShipmentController {
 
-    @Autowired
+    @Autowired											// it enables to perform ShipmentService in this class
     private ShipmentService shipmentService;
 
-    // 1. Add Shipment
+    //  Add Shipment
     @PostMapping
     public ShipmentDTO addShipment(@RequestBody ShipmentDTO shipmentDTO) {
         return shipmentService.addShipment(shipmentDTO);
     }
 
-    // 2. View All Shipments
+    //  View All Shipments
     @GetMapping
     public List<ShipmentDTO> getAllShipments() {
         return shipmentService.getAllShipments();
     }
 
-    // 3. Update Shipment
+    //  Update Shipment
     @PutMapping("/{id}")
     public ShipmentDTO updateShipment(@PathVariable Long id, @RequestBody ShipmentDTO shipmentDTO) {
         return shipmentService.updateShipment(id, shipmentDTO);
     }
 
-    // 4. Delete Shipment
+    //  Delete Shipment
     @DeleteMapping("/{id}")
     public void deleteShipment(@PathVariable Long id) {
         shipmentService.deleteShipment(id);

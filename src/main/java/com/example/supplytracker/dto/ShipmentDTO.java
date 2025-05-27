@@ -4,13 +4,15 @@ import com.example.supplytracker.entity.Shipment.Status;
 import java.time.LocalDate;
 
 public class ShipmentDTO {
-
+	//defining all attributes
     private Long id;
     private Long itemId;
     private String fromLocation;
     private String toLocation;
     private LocalDate expectedDelivery;
     private Status currentStatus;
+    
+    //getters and setters for the attributes
 	public Long getId() {
 		return id;
 	}
@@ -48,5 +50,4 @@ public class ShipmentDTO {
 		this.currentStatus = currentStatus;
 	}
 
-    // Getters and Setters
 }

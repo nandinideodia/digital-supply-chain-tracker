@@ -9,6 +9,6 @@ import java.util.List;
 
 //Provides CRUD Operations for the Shipment Data
 public interface ShipmentRepository extends JpaRepository<Shipment, Long> {
-    List<Shipment> findByStatus(String status);
-    List<Shipment> findByUserId(Long userId);
+//    List<Shipment> findByStatus(String status);
+//    List<Shipment> findByUserId(Long userId);
 }

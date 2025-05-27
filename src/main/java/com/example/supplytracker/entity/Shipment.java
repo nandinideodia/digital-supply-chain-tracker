@@ -33,6 +33,11 @@ public class Shipment {
         DELIVERED,
         DELAYED
     }
+    
+    @ManyToOne
+    @JoinColumn(name = "assigned_transporter_id", nullable = true)
+    private User assignedTransporter;
+
 
     // Default constructor
     public Shipment() {}
@@ -90,5 +95,13 @@ public class Shipment {
 
     public void setCurrentStatus(Status currentStatus) {
         this.currentStatus = currentStatus;
+    }
+    
+    public User getAssignedTransporter() {
+        return assignedTransporter;
+    }
+
+    public void setAssignedTransporter(User assignedTransporter) {
+        this.assignedTransporter = assignedTransporter;
     }
 }

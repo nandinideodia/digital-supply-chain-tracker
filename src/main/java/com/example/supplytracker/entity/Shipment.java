@@ -1,55 +1,34 @@
 package com.example.supplytracker.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import com.example.supplytracker.enums.ShipmentStatus;
 
 @Entity
-@Table(name = "shipments")
 public class Shipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long itemId;
+    // Link to Item entity
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
 
-    @Column(nullable = false)
     private String fromLocation;
-
-    @Column(nullable = false)
     private String toLocation;
 
-    @Column(nullable = false)
-    private LocalDate expectedDelivery;
+    private LocalDateTime expectedDelivery;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Status currentStatus;
+    private ShipmentStatus currentStatus;
 
-    public enum Status {
-        CREATED,
-        IN_TRANSIT,
-        DELIVERED,
-        DELAYED
-    }
-    
-    @ManyToOne
-    @JoinColumn(name = "assigned_transporter_id", nullable = true)
+    // Link to User entity as assigned transporter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "assigned_transporter_id")
     private User assignedTransporter;
-
-
-    // Default constructor
-    public Shipment() {}
-
-    // All argument constructor
-    public Shipment(Long itemId, String fromLocation, String toLocation, LocalDate expectedDelivery, Status currentStatus) {
-        this.itemId = itemId;
-        this.fromLocation = fromLocation;
-        this.toLocation = toLocation;
-        this.expectedDelivery = expectedDelivery;
-        this.currentStatus = currentStatus;
-    }
 
     // Getters and Setters
 
@@ -57,12 +36,29 @@ public class Shipment {
         return id;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
+    // Convenience getter/setter for itemId
+
     public Long getItemId() {
-        return itemId;
+        return (item != null) ? item.getId() : null;
     }
 
     public void setItemId(Long itemId) {
-        this.itemId = itemId;
+        if (this.item == null) {
+            this.item = new Item();
+        }
+        this.item.setId(itemId);
     }
 
     public String getFromLocation() {
@@ -81,22 +77,22 @@ public class Shipment {
         this.toLocation = toLocation;
     }
 
-    public LocalDate getExpectedDelivery() {
+    public LocalDateTime getExpectedDelivery() {
         return expectedDelivery;
     }
 
-    public void setExpectedDelivery(LocalDate expectedDelivery) {
+    public void setExpectedDelivery(LocalDateTime expectedDelivery) {
         this.expectedDelivery = expectedDelivery;
     }
 
-    public Status getCurrentStatus() {
+    public ShipmentStatus getCurrentStatus() {
         return currentStatus;
     }
 
-    public void setCurrentStatus(Status currentStatus) {
+    public void setCurrentStatus(ShipmentStatus currentStatus) {
         this.currentStatus = currentStatus;
     }
-    
+
     public User getAssignedTransporter() {
         return assignedTransporter;
     }

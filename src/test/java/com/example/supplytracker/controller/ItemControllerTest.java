@@ -1,9 +1,7 @@
 package com.example.supplytracker.controller;
 
 import com.example.supplytracker.entity.Item;
-import com.example.supplytracker.entity.User;
-import com.example.supplytracker.repository.ItemRepository;
-import com.example.supplytracker.repository.UserRepository;
+import com.example.supplytracker.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -23,94 +20,82 @@ import static org.mockito.Mockito.*;
 class ItemControllerTest {
 
     @Mock
-    private ItemRepository itemRepository;
-
-    @Mock
-    private UserRepository userRepository;
+    private ItemService itemService;
 
     @InjectMocks
     private ItemController itemController;
 
-    // Test case for successfully creating an item when the supplier exists
-     
     @Test
-    void testCreateItem_Success() {
-        User supplier = new User();
-        supplier.setId(1L);
-
+    void testCreateItem() {
         Item item = new Item();
-        item.setSupplier(supplier);
+        item.setId(1L);
+        item.setName("Item1");
+        item.setCategory("Category1");
         item.setCreatedDate(LocalDateTime.now());
 
-        when(userRepository.findById(supplier.getId())).thenReturn(Optional.of(supplier));
-        when(itemRepository.save(any(Item.class))).thenReturn(item);
+        when(itemService.createItem(any(Item.class))).thenReturn(item);
 
-        ResponseEntity<?> response = itemController.createItem(item);
+        ResponseEntity<Item> response = itemController.createItem(item);
 
-        assertEquals(200, response.getStatusCodeValue()); // HTTP OK
+        assertEquals(200, response.getStatusCodeValue());
         assertEquals(item, response.getBody());
-        verify(itemRepository).save(item);
+        verify(itemService).createItem(item);
     }
 
-    // Test case for failing to create an item due to an invalid supplier ID
-     
-    @Test
-    void testCreateItem_InvalidSupplier() {
-        User supplier = new User();
-        supplier.setId(1L);
-
-        Item item = new Item();
-        item.setSupplier(supplier);
-
-        when(userRepository.findById(supplier.getId())).thenReturn(Optional.empty());
-
-        ResponseEntity<?> response = itemController.createItem(item);
-
-        assertEquals(400, response.getStatusCodeValue()); // when HTTP Bad Request
-        assertEquals("Invalid supplier ID", response.getBody());
-    }
-
-    // Test case for retrieving all items successfully
-     
     @Test
     void testGetAllItems() {
         Item item1 = new Item();
         Item item2 = new Item();
         List<Item> items = Arrays.asList(item1, item2);
 
-        when(itemRepository.findAll()).thenReturn(items);
+        when(itemService.getAllItems()).thenReturn(items);
 
-        List<Item> response = itemController.getAllItems();
+        ResponseEntity<List<Item>> response = itemController.getAllItems();
 
-        assertEquals(2, response.size());
-        assertTrue(response.contains(item1));
-        assertTrue(response.contains(item2));
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(2, response.getBody().size());
+        verify(itemService).getAllItems();
     }
 
-    // Test case for successfully retrieving an item by ID
-     
     @Test
-    void testGetItemById_Success() {
+    void testGetItemById() {
         Item item = new Item();
         item.setId(1L);
 
-        when(itemRepository.findById(item.getId())).thenReturn(Optional.of(item));
+        when(itemService.getItemById(1L)).thenReturn(item);
 
-        ResponseEntity<?> response = itemController.getItemById(item.getId());
+        ResponseEntity<Item> response = itemController.getItemById(1L);
 
-        assertEquals(200, response.getStatusCodeValue()); // wehn HTTP is OK
+        assertEquals(200, response.getStatusCodeValue());
         assertEquals(item, response.getBody());
+        verify(itemService).getItemById(1L);
     }
 
-    // Test case for handling item retrieval failure when ID does not exist.
-     
-    @SuppressWarnings("deprecation")
-	@Test
-    void testGetItemById_NotFound() {
-        when(itemRepository.findById(99L)).thenReturn(Optional.empty());
+    @Test
+    void testUpdateItem() {
+        Long id = 1L;
+        Item updatedItem = new Item();
+        updatedItem.setId(id);
+        updatedItem.setName("UpdatedName");
+        updatedItem.setCategory("UpdatedCategory");
 
-        ResponseEntity<?> response = itemController.getItemById(99L);
+        when(itemService.updateItem(eq(id), any(Item.class))).thenReturn(updatedItem);
 
-        assertEquals(404, response.getStatusCodeValue()); // when HTTP Not Found
+        ResponseEntity<Item> response = itemController.updateItem(id, updatedItem);
+
+        assertEquals(200, response.getStatusCodeValue());
+        assertEquals(updatedItem, response.getBody());
+        verify(itemService).updateItem(id, updatedItem);
+    }
+
+    @Test
+    void testDeleteItem() {
+        Long id = 1L;
+        doNothing().when(itemService).deleteItem(id);
+
+        ResponseEntity<Void> response = itemController.deleteItem(id);
+
+        assertEquals(204, response.getStatusCodeValue());
+        verify(itemService).deleteItem(id);
     }
 }

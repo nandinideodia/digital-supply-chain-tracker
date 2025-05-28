@@ -11,5 +11,6 @@ public interface ShipmentService {
     ShipmentDTO getShipmentById(Long id);
     ShipmentDTO updateShipment(Long id, ShipmentDTO shipmentDTO);
     void deleteShipment(Long id);
-	ShipmentDTO updateShipment(Long id, ShipmentStatus currentStatus);
+    
+    ShipmentDTO updateShipmentStatus(Long id, ShipmentStatus newStatus);  // ✅ renamed
 }

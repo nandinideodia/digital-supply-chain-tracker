@@ -119,4 +119,34 @@ public class ShipmentServiceImpl implements ShipmentService {
         dto.setCurrentStatus(shipment.getCurrentStatus());
         return dto;
     }
+    
+    public ShipmentDTO updateShipmentStatus(Long id, ShipmentStatus newStatus) {
+        Shipment shipment = shipmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Shipment not found with ID: " + id));
+
+        shipment.setCurrentStatus(newStatus);
+        Shipment updatedShipment = shipmentRepository.save(shipment);
+
+        return mapToDto(updatedShipment); // Or build DTO manually if no mapper
+    }
+    
+    private ShipmentDTO mapToDto(Shipment shipment) {
+        ShipmentDTO dto = new ShipmentDTO();
+        dto.setId(shipment.getId());
+
+        // Extract itemId from the Item entity
+        if (shipment.getItem() != null) {
+            dto.setItemId(shipment.getItem().getId());
+        }
+
+        dto.setFromLocation(shipment.getFromLocation());
+        dto.setToLocation(shipment.getToLocation());
+        dto.setExpectedDelivery(shipment.getExpectedDelivery());
+        dto.setCurrentStatus(shipment.getCurrentStatus());
+
+        return dto;
+    }
+
+
+
 }

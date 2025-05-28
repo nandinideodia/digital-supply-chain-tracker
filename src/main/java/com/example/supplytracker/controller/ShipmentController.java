@@ -61,4 +61,13 @@ public class ShipmentController {
 //	    ShipmentDTO updatedShipment = shipmentService.updateShipment(id, statusUpdateRequest.getCurrentStatus());
 //	    return ResponseEntity.ok(updatedShipment);
 //	}
+    @PutMapping("/{id}/status")
+    public ResponseEntity<ShipmentDTO> updateShipmentStatus(
+            @PathVariable Long id,
+            @RequestBody ShipmentStatusUpdateRequest statusUpdateRequest) {
+        
+        ShipmentDTO updatedShipment = shipmentService.updateShipmentStatus(id, statusUpdateRequest.getCurrentStatus());
+        return ResponseEntity.ok(updatedShipment);
+    }
+
 }

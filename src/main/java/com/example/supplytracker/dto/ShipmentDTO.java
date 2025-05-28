@@ -14,7 +14,8 @@ public class ShipmentDTO {
     private LocalDateTime expectedDelivery;
     private ShipmentStatus currentStatus;
     
-    public class ShipmentStatusUpdateRequest {
+    public static class ShipmentStatusUpdateRequest {
+
         private ShipmentStatus currentStatus;
 
         public ShipmentStatus getCurrentStatus() {

@@ -5,6 +5,9 @@ import com.example.supplytracker.entity.User;
 import com.example.supplytracker.repository.ItemRepository;
 import com.example.supplytracker.repository.UserRepository;
 import com.example.supplytracker.service.ItemService;
+
+import jakarta.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +17,21 @@ import java.util.List;
 @Service
 public class ItemServiceImpl implements ItemService {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemRepository itemRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public ItemServiceImpl(ItemRepository itemRepository, UserRepository userRepository) {
+        this.itemRepository = itemRepository;
+        this.userRepository = userRepository;
+    }
 
     @Override
     public Item createItem(Item item) {
-        User supplier = userRepository.findById(item.getSupplier().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Invalid supplier ID"));
+        if (item.getSupplier() == null || userRepository.findById(item.getSupplier().getId()).isEmpty()) {
+            throw new EntityNotFoundException("Invalid supplier ID");
+        }
 
-        item.setSupplier(supplier);
         item.setCreatedDate(LocalDateTime.now());
         return itemRepository.save(item);
     }
@@ -38,6 +44,31 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item getItemById(Long id) {
         return itemRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Item not found with ID: " + id));
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id: " + id));
+    }
+
+    @Override
+    public Item updateItem(Long id, Item updatedItem) {
+        Item existingItem = itemRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Item not found with id: " + id));
+
+        existingItem.setName(updatedItem.getName());
+        existingItem.setCategory(updatedItem.getCategory());
+
+        if (updatedItem.getSupplier() != null) {
+            userRepository.findById(updatedItem.getSupplier().getId())
+                    .orElseThrow(() -> new EntityNotFoundException("Invalid supplier ID"));
+            existingItem.setSupplier(updatedItem.getSupplier());
+        }
+
+        return itemRepository.save(existingItem);
+    }
+
+    @Override
+    public void deleteItem(Long id) {
+        if (!itemRepository.existsById(id)) {
+            throw new EntityNotFoundException("Item not found with id: " + id);
+        }
+        itemRepository.deleteById(id);
     }
 }

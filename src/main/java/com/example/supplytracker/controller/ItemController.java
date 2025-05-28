@@ -1,58 +1,47 @@
 package com.example.supplytracker.controller;
 
 import com.example.supplytracker.entity.Item;
-import com.example.supplytracker.entity.User;
-import com.example.supplytracker.repository.ItemRepository;
-import com.example.supplytracker.repository.UserRepository;
-
+import com.example.supplytracker.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/items")
 public class ItemController {
 
-    @Autowired
-    private ItemRepository itemRepository;
+    private final ItemService itemService;
 
     @Autowired
-    private UserRepository userRepository;
+    public ItemController(ItemService itemService) {
+        this.itemService = itemService;
+    }
 
-    // POST /api/items
     @PostMapping
-    public ResponseEntity<?> createItem(@RequestBody Item item) {
-        Optional<User> supplier = userRepository.findById(item.getSupplier().getId());
-
-        if (!supplier.isPresent()) {
-            return ResponseEntity.badRequest().body("Invalid supplier ID");
-        }
-
-        item.setSupplier(supplier.get());
-        item.setCreatedDate(LocalDateTime.now());
-        Item savedItem = itemRepository.save(item);
-        return ResponseEntity.ok(savedItem);
+    public ResponseEntity<Item> createItem(@RequestBody Item item) {
+        return ResponseEntity.ok(itemService.createItem(item));
     }
 
-    // GET /api/items
     @GetMapping
-    public List<Item> getAllItems() {
-        return itemRepository.findAll();
+    public ResponseEntity<List<Item>> getAllItems() {
+        return ResponseEntity.ok(itemService.getAllItems());
     }
 
-    // GET /api/items/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<?> getItemById(@PathVariable Long id) {
-        Optional<Item> item = itemRepository.findById(id);
+    public ResponseEntity<Item> getItemById(@PathVariable Long id) {
+        return ResponseEntity.ok(itemService.getItemById(id));
+    }
 
-        if (!item.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{id}")
+    public ResponseEntity<Item> updateItem(@PathVariable Long id, @RequestBody Item updatedItem) {
+        return ResponseEntity.ok(itemService.updateItem(id, updatedItem));
+    }
 
-        return ResponseEntity.ok(item.get());
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteItem(@PathVariable Long id) {
+        itemService.deleteItem(id);
+        return ResponseEntity.noContent().build();
     }
 }

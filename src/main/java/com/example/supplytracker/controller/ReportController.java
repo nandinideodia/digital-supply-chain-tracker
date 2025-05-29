@@ -21,5 +21,8 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getPerformancePerSupplier());
     }
 
-
+    @GetMapping("/delayed-shipments")
+    public ResponseEntity<List<Shipment>> getDelayedShipments() {
+        return ResponseEntity.ok(reportService.getDelayedShipments());
+    }
 }

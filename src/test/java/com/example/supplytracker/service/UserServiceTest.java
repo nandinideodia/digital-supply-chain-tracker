@@ -3,6 +3,7 @@ package com.example.supplytracker.service;
 import com.example.supplytracker.dto.UserDTO;
 import com.example.supplytracker.entity.Role;
 import com.example.supplytracker.entity.User;
+import com.example.supplytracker.exception.UserNotFoundException;
 import com.example.supplytracker.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.mockito.*;
@@ -88,10 +89,9 @@ class UserServiceTest {
     void testGetUserById_NotFound() {
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
-        UserDTO result = userService.getUserById(1L);
-
-        assertNull(result);
+        assertThrows(UserNotFoundException.class, () -> userService.getUserById(1L));
     }
+
 
     @Test
     void testUpdateUser_Found() {

@@ -1,22 +1,11 @@
-package com.example.supplytracker.entity;
-import com.example.supplytracker.enums.*;
-import jakarta.persistence.*;
+package com.example.supplytracker.dto;
+
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "alerts")
-public class Alert {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class AlertDTO {
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(name = "shipment_id", nullable = false)
-    private Shipment shipment;
-
-    @Enumerated(EnumType.STRING)
-    private AlertType type; // DELAY, DAMAGE
-
+    private Long shipmentId;
+    private String type;
     private String message;
     private LocalDateTime createdOn;
     private Boolean resolved;
@@ -25,11 +14,11 @@ public class Alert {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Shipment getShipment() { return shipment; }
-    public void setShipment(Shipment shipment) { this.shipment = shipment; }
+    public Long getShipmentId() { return shipmentId; }
+    public void setShipmentId(Long shipmentId) { this.shipmentId = shipmentId; }
 
-    public AlertType getType() { return type; }
-    public void setType(AlertType type) { this.type = type; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }

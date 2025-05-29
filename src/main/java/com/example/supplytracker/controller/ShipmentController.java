@@ -3,6 +3,9 @@ package com.example.supplytracker.controller;
 import com.example.supplytracker.dto.ShipmentDTO;
 import com.example.supplytracker.dto.ShipmentDTO.ShipmentStatusUpdateRequest;
 import com.example.supplytracker.service.ShipmentService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +25,7 @@ public class ShipmentController {
 
     // Create a new shipment
     @PostMapping
-    public ResponseEntity<ShipmentDTO> createShipment(@RequestBody ShipmentDTO shipmentDTO) {
+    public ResponseEntity<ShipmentDTO> createShipment(@Valid @RequestBody ShipmentDTO shipmentDTO) {
         ShipmentDTO createdShipment = shipmentService.createShipment(shipmentDTO);
         return ResponseEntity.ok(createdShipment);
     }

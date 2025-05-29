@@ -5,12 +5,17 @@ import com.example.supplytracker.entity.User;
 import com.example.supplytracker.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+
+import com.example.supplytracker.exception.UserNotFoundException;
+import com.example.supplytracker.exception.EmailAlreadyExistsException;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
+@ControllerAdvice
 public class UserService {
 
     @Autowired
@@ -18,11 +23,11 @@ public class UserService {
 
     // Create
     public UserDTO createUser(UserDTO userDTO) {
-        User user = new User();
-        user.setName(userDTO.getName());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
-        user.setRole(userDTO.getRole());
+        if (userRepository.existsByEmail(userDTO.getEmail())) {
+            throw new EmailAlreadyExistsException(userDTO.getEmail());
+        }
+
+        User user = new User(userDTO.getId(), userDTO.getName(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getRole());
         User saved = userRepository.save(user);
         userDTO.setId(saved.getId());
         return userDTO;
@@ -35,8 +40,9 @@ public class UserService {
 
     // Read by ID
     public UserDTO getUserById(Long id) {
-        Optional<User> userOpt = userRepository.findById(id);
-        return userOpt.map(this::convertToDTO).orElse(null);
+        return userRepository.findById(id)
+            .map(this::convertToDTO)
+            .orElseThrow(() -> new UserNotFoundException(id));
     }
 
     // Update
@@ -65,5 +71,6 @@ public class UserService {
     // Utility: Entity to DTO
     private UserDTO convertToDTO(User user) {
         return new UserDTO(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getRole());
-    }
+    }   
+    
 }

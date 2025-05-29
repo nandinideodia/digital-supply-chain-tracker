@@ -12,9 +12,12 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.supplytracker.exception.CheckpointLogNotFoundException;
+import com.example.supplytracker.exception.InvalidShipmentReferenceException;
+import com.example.supplytracker.exception.UserNotAuthorizedException;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
 @Service
 public class CheckpointLogServiceImpl implements CheckpointLogService {
 
@@ -38,7 +41,7 @@ public class CheckpointLogServiceImpl implements CheckpointLogService {
     @Override
     public CheckpointLogDTO getLogById(Long id) {
         CheckpointLog log = logRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Log not found with ID: " + id));
+            .orElseThrow(() -> new CheckpointLogNotFoundException(id));
         return toDto(log);
     }
 
@@ -52,21 +55,22 @@ public class CheckpointLogServiceImpl implements CheckpointLogService {
     @Override
     public CheckpointLogDTO updateLog(Long id, CheckpointLogDTO dto) {
         CheckpointLog existing = logRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Log not found with ID: " + id));
-        existing.setMessage(dto.getMessage());
-        existing.setTimestamp(dto.getTimestamp());
-
-        if (dto.getUserId() != null) {
-            User user = userRepository.findById(dto.getUserId())
-                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
-            existing.setUser(user);
-        }
+            .orElseThrow(() -> new CheckpointLogNotFoundException(id));
 
         if (dto.getShipmentId() != null) {
             Shipment shipment = shipmentRepository.findById(dto.getShipmentId())
-                    .orElseThrow(() -> new EntityNotFoundException("Shipment not found"));
+                .orElseThrow(() -> new InvalidShipmentReferenceException(dto.getShipmentId()));
             existing.setShipment(shipment);
         }
+
+        if (dto.getUserId() != null) {
+            User user = userRepository.findById(dto.getUserId())
+                .orElseThrow(() -> new UserNotAuthorizedException(dto.getUserId()));
+            existing.setUser(user);
+        }
+
+        existing.setMessage(dto.getMessage());
+        existing.setTimestamp(dto.getTimestamp());
 
         return toDto(logRepository.save(existing));
     }
@@ -102,5 +106,5 @@ public class CheckpointLogServiceImpl implements CheckpointLogService {
 
         log.setTimestamp(dto.getTimestamp());
         return log;
-    }
+    }   
 }

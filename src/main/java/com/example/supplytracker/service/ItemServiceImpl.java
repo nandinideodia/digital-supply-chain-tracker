@@ -1,5 +1,8 @@
 package com.example.supplytracker.service;
 
+import com.example.supplytracker.exception.InvalidSupplierIdException;
+
+
 import com.example.supplytracker.entity.Item;
 import com.example.supplytracker.entity.User;
 import com.example.supplytracker.repository.ItemRepository;
@@ -28,10 +31,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item createItem(Item item) {
-        if (item.getSupplier() == null || userRepository.findById(item.getSupplier().getId()).isEmpty()) {
-            throw new EntityNotFoundException("Invalid supplier ID");
-        }
-
+        User supplier = userRepository.findById(item.getSupplier().getId())
+            .orElseThrow(() -> new IllegalArgumentException("Invalid supplier ID"));
+        item.setSupplier(supplier);
         item.setCreatedDate(LocalDateTime.now());
         return itemRepository.save(item);
     }
@@ -57,7 +59,7 @@ public class ItemServiceImpl implements ItemService {
 
         if (updatedItem.getSupplier() != null) {
             userRepository.findById(updatedItem.getSupplier().getId())
-                    .orElseThrow(() -> new EntityNotFoundException("Invalid supplier ID"));
+                    .orElseThrow(() -> new InvalidSupplierIdException("Invalid supplier ID"));
             existingItem.setSupplier(updatedItem.getSupplier());
         }
 
@@ -71,4 +73,5 @@ public class ItemServiceImpl implements ItemService {
         }
         itemRepository.deleteById(id);
     }
+       
 }

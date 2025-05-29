@@ -12,6 +12,10 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.example.supplytracker.exception.ShipmentNotFoundException;
+import com.example.supplytracker.exception.InvalidShipmentStatusException;
+import com.example.supplytracker.exception.ItemNotFoundException;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,10 +33,17 @@ public class ShipmentServiceImpl implements ShipmentService {
 
     @Override
     public ShipmentDTO createShipment(ShipmentDTO shipmentDTO) {
+        Item item = itemRepository.findById(shipmentDTO.getItemId())
+            .orElseThrow(() -> new IllegalArgumentException("Item not found for ID: " + shipmentDTO.getItemId()));
+
         Shipment shipment = dtoToEntity(shipmentDTO);
+        shipment.setItem(item); // Ensure item is set before saving
+
         Shipment savedShipment = shipmentRepository.save(shipment);
         return entityToDto(savedShipment);
     }
+    
+    
 
     @Override
     public List<ShipmentDTO> getAllShipments() {
@@ -45,27 +56,29 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public ShipmentDTO getShipmentById(Long id) {
         Shipment shipment = shipmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shipment not found with id " + id));
+            .orElseThrow(() -> new ShipmentNotFoundException(id));
         return entityToDto(shipment);
     }
 
     @Override
     public ShipmentDTO updateShipment(Long id, ShipmentDTO shipmentDTO) {
         Shipment existingShipment = shipmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shipment not found with id " + id));
+            .orElseThrow(() -> new ShipmentNotFoundException(id));
 
-        // Fetch Item entity by itemId from DTO
         Item item = itemRepository.findById(shipmentDTO.getItemId())
-                .orElseThrow(() -> new EntityNotFoundException("Item not found with id " + shipmentDTO.getItemId()));
+            .orElseThrow(() -> new ItemNotFoundException(shipmentDTO.getItemId()));
 
-        existingShipment.setItem(item);  // Set Item entity here
+        if (shipmentDTO.getCurrentStatus() == null) {
+            throw new InvalidShipmentStatusException("Status cannot be null");
+        }
+
+        existingShipment.setItem(item);
         existingShipment.setFromLocation(shipmentDTO.getFromLocation());
         existingShipment.setToLocation(shipmentDTO.getToLocation());
         existingShipment.setExpectedDelivery(shipmentDTO.getExpectedDelivery());
         existingShipment.setCurrentStatus(shipmentDTO.getCurrentStatus());
 
-        Shipment updatedShipment = shipmentRepository.save(existingShipment);
-        return entityToDto(updatedShipment);
+        return entityToDto(shipmentRepository.save(existingShipment));
     }
 
     @Override
@@ -146,7 +159,5 @@ public class ShipmentServiceImpl implements ShipmentService {
 
         return dto;
     }
-
-
-
+    
 }

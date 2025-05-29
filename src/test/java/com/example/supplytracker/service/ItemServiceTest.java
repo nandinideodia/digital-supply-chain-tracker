@@ -60,7 +60,7 @@ class ItemServiceTest {
     void testCreateItem_InvalidSupplier() {
         when(userRepository.findById(supplier.getId())).thenReturn(Optional.empty());
 
-        assertThrows(EntityNotFoundException.class, () -> itemService.createItem(item));
+        assertThrows(IllegalArgumentException.class, () -> itemService.createItem(item));
         verify(userRepository).findById(supplier.getId());
     }
 

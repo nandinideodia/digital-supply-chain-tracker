@@ -84,7 +84,7 @@ public class ShipmentServiceImpl implements ShipmentService {
     @Override
     public void deleteShipment(Long id) {
         Shipment shipment = shipmentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Shipment not found with id " + id));
+                .orElseThrow(() -> new ShipmentNotFoundException(id));
         shipmentRepository.delete(shipment);
     }
 

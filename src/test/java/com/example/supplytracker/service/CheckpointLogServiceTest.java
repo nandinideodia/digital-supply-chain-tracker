@@ -120,8 +120,7 @@ class CheckpointLogServiceTest {
 
     @Test
     void testDeleteLogById_Success() {
-        when(logRepository.existsById(1L)).thenReturn(true);
-
+    	when(logRepository.existsById(1L)).thenReturn(true);
         checkpointLogService.deleteLogById(1L);
 
         verify(logRepository).deleteById(1L);
@@ -129,9 +128,11 @@ class CheckpointLogServiceTest {
 
     @Test
     void testDeleteLogById_NotFound() {
-        when(logRepository.existsById(1L)).thenReturn(false);
+        when(logRepository.existsById(1L)).thenReturn(false); // Ensure this returns false
 
         assertThrows(EntityNotFoundException.class, () -> checkpointLogService.deleteLogById(1L));
-        verify(logRepository).existsById(1L);
+
+        verify(logRepository, never()).deleteById(1L); // This is correct if service method is fixed!
     }
+    
 }

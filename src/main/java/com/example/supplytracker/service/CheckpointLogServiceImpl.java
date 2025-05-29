@@ -77,8 +77,12 @@ public class CheckpointLogServiceImpl implements CheckpointLogService {
 
     @Override
     public void deleteLogById(Long id) {
+        if (!logRepository.existsById(id)) {
+            throw new EntityNotFoundException("CheckpointLog with id " + id + " not found");
+        }
         logRepository.deleteById(id);
     }
+
 
     private CheckpointLogDTO toDto(CheckpointLog log) {
         CheckpointLogDTO dto = new CheckpointLogDTO();

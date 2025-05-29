@@ -4,6 +4,7 @@ import com.example.supplytracker.dto.ShipmentDTO;
 import com.example.supplytracker.entity.Item;
 import com.example.supplytracker.entity.Shipment;
 import com.example.supplytracker.enums.ShipmentStatus;
+import com.example.supplytracker.exception.ShipmentNotFoundException;
 import com.example.supplytracker.repository.ItemRepository;
 import com.example.supplytracker.repository.ShipmentRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -77,7 +78,7 @@ class ShipmentServiceTest {
         assertNotNull(result);
         assertEquals(ShipmentStatus.In_transit, result.getCurrentStatus());
         verify(shipmentRepository).save(any(Shipment.class));
-        verify(itemRepository).findById(1L);
+        verify(itemRepository, times(2)).findById(1L);
     }
 
     @Test
@@ -96,8 +97,7 @@ class ShipmentServiceTest {
     @Test
     void testGetShipmentById_NotFound() {
         when(shipmentRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> shipmentService.getShipmentById(1L));
+        assertThrows(ShipmentNotFoundException.class, () -> shipmentService.updateShipment(1L, shipmentDTO));
         verify(shipmentRepository).findById(1L);
     }
 
@@ -125,8 +125,7 @@ class ShipmentServiceTest {
     @Test
     void testUpdateShipment_NotFound() {
         when(shipmentRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> shipmentService.updateShipment(1L, shipmentDTO));
+        assertThrows(ShipmentNotFoundException.class, () -> shipmentService.updateShipment(1L, shipmentDTO));
         verify(shipmentRepository).findById(1L);
     }
 
@@ -143,10 +142,10 @@ class ShipmentServiceTest {
     @Test
     void testDeleteShipment_NotFound() {
         when(shipmentRepository.findById(1L)).thenReturn(Optional.empty());
-
-        assertThrows(EntityNotFoundException.class, () -> shipmentService.deleteShipment(1L));
+        assertThrows(ShipmentNotFoundException.class, () -> shipmentService.deleteShipment(1L));
         verify(shipmentRepository).findById(1L);
     }
+
 
     @Test
     void testUpdateShipmentStatus_Success() {

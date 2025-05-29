@@ -47,5 +47,15 @@ public class ReportService {
         return new ArrayList<>(result.values());
     }
 
-
+    public List<Shipment> getDelayedShipments() {
+        List<Shipment> delayed = new ArrayList<>();
+        for (Shipment s : shipmentRepository.findAll()) {
+            if (s.getExpectedDelivery() != null &&
+                s.getCurrentStatus() != null &&
+                s.getCurrentStatus().name().equalsIgnoreCase("Delayed")) {
+                delayed.add(s);
+            }
+        }
+        return delayed;
+    }
 }

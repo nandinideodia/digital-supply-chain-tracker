@@ -2,6 +2,9 @@ package com.example.supplytracker.controller;
 
 import com.example.supplytracker.dto.CheckpointLogDTO;
 import com.example.supplytracker.service.CheckpointLogService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +29,12 @@ public class CheckpointLogController {
     }
 
     @PostMapping
-    public CheckpointLogDTO addLog(@RequestBody CheckpointLogDTO checkpointLog) {
+    public CheckpointLogDTO addLog(@Valid @RequestBody CheckpointLogDTO checkpointLog) {
         return checkpointLogService.addLog(checkpointLog);
     }
 
     @PutMapping("/{id}")
-    public CheckpointLogDTO updateLog(@PathVariable Long id, @RequestBody CheckpointLogDTO updatedLog) {
+    public CheckpointLogDTO updateLog(@PathVariable Long id, @Valid @RequestBody CheckpointLogDTO updatedLog) {
         return checkpointLogService.updateLog(id, updatedLog);
     }
 

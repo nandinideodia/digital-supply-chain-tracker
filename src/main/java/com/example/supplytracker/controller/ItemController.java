@@ -2,6 +2,9 @@ package com.example.supplytracker.controller;
 
 import com.example.supplytracker.entity.Item;
 import com.example.supplytracker.service.ItemService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +23,7 @@ public class ItemController {
     }
 
     @PostMapping
-    public ResponseEntity<Item> createItem(@RequestBody Item item) {
+    public ResponseEntity<Item> createItem(@Valid @RequestBody Item item) {
         return ResponseEntity.ok(itemService.createItem(item));
     }
 

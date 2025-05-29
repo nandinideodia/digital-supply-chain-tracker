@@ -2,6 +2,9 @@ package com.example.supplytracker.controller;
 
 import com.example.supplytracker.dto.UserDTO;
 import com.example.supplytracker.service.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +20,7 @@ public class UserController {
 
     // CREATE
     @PostMapping
-    public UserDTO createUser(@RequestBody UserDTO userDTO) {
+    public UserDTO createUser(@Valid @RequestBody UserDTO userDTO) {
         return userService.createUser(userDTO);
     }
 

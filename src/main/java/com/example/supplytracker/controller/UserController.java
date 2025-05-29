@@ -1,7 +1,7 @@
 package com.example.supplytracker.controller;
 
 import com.example.supplytracker.dto.UserDTO;
-import com.example.supplytracker.service.UserService;
+import com.example.supplytracker.service.UserServiceImpl;
 
 import jakarta.validation.Valid;
 
@@ -16,7 +16,7 @@ import java.util.List;
 public class UserController {
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userService;
 
     // CREATE
     @PostMapping

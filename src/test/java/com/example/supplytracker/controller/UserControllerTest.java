@@ -1,7 +1,7 @@
 package com.example.supplytracker.controller;
 
 import com.example.supplytracker.dto.UserDTO;
-import com.example.supplytracker.service.UserService;
+import com.example.supplytracker.service.UserServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 class UserControllerTest {
 
     @Mock
-    private UserService userService;
+    private UserServiceImpl userService;
 
     @InjectMocks
     private UserController userController;

@@ -23,8 +23,8 @@ API DESIGN
 
 5. CheckpointLogController
 --> POST /api/checkpoints                 
-POST /api/checkpoints                 
-GET /api/checkpoints/shipment/{id}GET /api/checkpoints/shipment/{id}
+--> POST /api/checkpoints                 
+--> GET /api/checkpoints/shipment/{id}GET /api/checkpoints/shipment/{id}
 
 
 6. AlertController

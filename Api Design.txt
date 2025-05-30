@@ -1,0 +1,36 @@
+API DESIGN
+
+
+1. AuthController
+--> POST /api/auth/register 
+--> POST /api/auth/login 
+
+2. UserController (Admin) 
+--> GET /api/users 
+--> PUT /api/users/{id}/role
+
+3. ItemController (Supplier/Admin)
+--> POST /api/items 
+--> GET /api/items 
+--> GET /api/items/{id}
+
+4. ShipmentController
+--> POST /api/shipments                   
+--> PUT /api/shipments/{id}/assign        
+--> GET /api/shipments                    
+--> GET /api/shipments/{id} 
+--> PUT /api/shipments/{id}/status 
+
+5. CheckpointLogController
+--> POST /api/checkpoints                 
+POST /api/checkpoints                 
+GET /api/checkpoints/shipment/{id}GET /api/checkpoints/shipment/{id}
+
+
+6. AlertController
+--> GET /api/alerts 
+--> PUT /api/alerts/{id}/resolve 
+
+7. ReportController 
+--> GET /api/reports/delivery-performance 
+--> GET /api/reports/delayed-shipments 

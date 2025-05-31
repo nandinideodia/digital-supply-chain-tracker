@@ -140,7 +140,7 @@ GET /api/reports/delayed-shipments
 
 ## 🧭 Class Diagram
 
-![Class Diagram](ER-diagram.png)
+![Class Diagram](Class-diagram.jpg)
 
 ---
 

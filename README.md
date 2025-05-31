@@ -132,6 +132,18 @@ GET /api/reports/delayed-shipments
 
 ---
 
+## 🖼 ER Diagram
+
+![ER Diagram](Class-diagram.jpg)
+
+---
+
+## 🧭 Class Diagram
+
+![Class Diagram](ER-diagram.png)
+
+---
+
 ## ⚙ Sample Configuration (`application.properties`)
 
 ```properties
@@ -187,12 +199,6 @@ com.supplytracker
 | 4    | Alerts and notifications module          |
 | 5    | Reporting and dashboards                 |
 | 6    | Testing, documentation, Swagger UI       |
-
----
-
-## 📜 License
-
-This project is for educational simulation purposes. Contact the authors before commercial use.
 
 ---
 

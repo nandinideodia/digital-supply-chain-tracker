@@ -3,13 +3,18 @@ package com.example.supplytracker.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import com.example.supplytracker.enums.ShipmentStatus;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @Entity
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Shipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "native", strategy = "native")
     private Long id;
 
     // Link to Item entity

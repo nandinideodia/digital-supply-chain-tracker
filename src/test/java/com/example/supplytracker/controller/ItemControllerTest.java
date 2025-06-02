@@ -1,6 +1,6 @@
 package com.example.supplytracker.controller;
 
-import com.example.supplytracker.entity.Item;
+import com.example.supplytracker.dto.ItemDTO;
 import com.example.supplytracker.service.ItemService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -27,65 +27,59 @@ class ItemControllerTest {
 
     @Test
     void testCreateItem() {
-        Item item = new Item();
-        item.setId(1L);
-        item.setName("Item1");
-        item.setCategory("Category1");
-        item.setCreatedDate(LocalDateTime.now());
+        ItemDTO itemDTO = new ItemDTO(1L, "Item1", "Category1", 2L, LocalDateTime.now());
 
-        when(itemService.createItem(any(Item.class))).thenReturn(item);
+        when(itemService.createItem(any(ItemDTO.class))).thenReturn(itemDTO);
 
-        ResponseEntity<Item> response = itemController.createItem(item);
+        ResponseEntity<ItemDTO> response = itemController.createItem(itemDTO);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(item, response.getBody());
-        verify(itemService).createItem(item);
+        assertEquals(itemDTO, response.getBody());
+        verify(itemService).createItem(itemDTO);
     }
 
     @Test
     void testGetAllItems() {
-        Item item1 = new Item();
-        Item item2 = new Item();
-        List<Item> items = Arrays.asList(item1, item2);
+        ItemDTO item1 = new ItemDTO(1L, "Item1", "Category1", 2L, LocalDateTime.now());
+        ItemDTO item2 = new ItemDTO(2L, "Item2", "Category2", 3L, LocalDateTime.now());
+        List<ItemDTO> items = Arrays.asList(item1, item2);
 
         when(itemService.getAllItems()).thenReturn(items);
 
-        ResponseEntity<List<Item>> response = itemController.getAllItems();
+        ResponseEntity<List<ItemDTO>> response = itemController.getAllItems();
 
         assertEquals(200, response.getStatusCodeValue());
+        assertNotNull(response.getBody());
         assertEquals(2, response.getBody().size());
         verify(itemService).getAllItems();
     }
 
     @Test
     void testGetItemById() {
-        Item item = new Item();
-        item.setId(1L);
+        Long id = 1L;
+        ItemDTO itemDTO = new ItemDTO(id, "Item1", "Category1", 2L, LocalDateTime.now());
 
-        when(itemService.getItemById(1L)).thenReturn(item);
+        when(itemService.getItemById(id)).thenReturn(itemDTO);
 
-        ResponseEntity<Item> response = itemController.getItemById(1L);
+        ResponseEntity<ItemDTO> response = itemController.getItemById(id);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(item, response.getBody());
-        verify(itemService).getItemById(1L);
+        assertEquals(itemDTO, response.getBody());
+        verify(itemService).getItemById(id);
     }
 
     @Test
     void testUpdateItem() {
         Long id = 1L;
-        Item updatedItem = new Item();
-        updatedItem.setId(id);
-        updatedItem.setName("UpdatedName");
-        updatedItem.setCategory("UpdatedCategory");
+        ItemDTO updatedItemDTO = new ItemDTO(id, "UpdatedName", "UpdatedCategory", 2L, LocalDateTime.now());
 
-        when(itemService.updateItem(eq(id), any(Item.class))).thenReturn(updatedItem);
+        when(itemService.updateItem(eq(id), any(ItemDTO.class))).thenReturn(updatedItemDTO);
 
-        ResponseEntity<Item> response = itemController.updateItem(id, updatedItem);
+        ResponseEntity<ItemDTO> response = itemController.updateItem(id, updatedItemDTO);
 
         assertEquals(200, response.getStatusCodeValue());
-        assertEquals(updatedItem, response.getBody());
-        verify(itemService).updateItem(id, updatedItem);
+        assertEquals(updatedItemDTO, response.getBody());
+        verify(itemService).updateItem(id, updatedItemDTO);
     }
 
     @Test
